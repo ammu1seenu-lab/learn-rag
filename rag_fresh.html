@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>RAG Pipeline Simulator</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+font-family:Inter,Arial,sans-serif;
+}
+
+body{
+margin:0;
+background:#0b1020;
+color:#e5e7eb;
+}
+
+header{
+padding:25px;
+text-align:center;
+background:linear-gradient(135deg,#111827,#1e293b);
+}
+
+h1{
+margin:0;
+font-size:32px;
+}
+
+.subtitle{
+color:#94a3b8;
+margin-top:10px;
+}
+
+
+.container{
+padding:30px;
+display:grid;
+gap:25px;
+}
+
+
+.card{
+
+background:#111827;
+border:1px solid #334155;
+border-radius:18px;
+padding:25px;
+
+box-shadow:
+0 10px 30px rgba(0,0,0,.3);
+
+}
+
+
+.card h2{
+color:#38bdf8;
+}
+
+
+button{
+
+background:#38bdf8;
+border:none;
+padding:12px 20px;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+
+}
+
+button:hover{
+background:#0ea5e9;
+}
+
+
+textarea,input{
+
+width:100%;
+padding:15px;
+background:#020617;
+border:1px solid #334155;
+border-radius:10px;
+color:white;
+
+}
+
+
+
+.pipeline{
+
+display:flex;
+gap:10px;
+overflow:auto;
+
+}
+
+
+.step{
+
+min-width:160px;
+padding:20px;
+border-radius:15px;
+background:#1e293b;
+text-align:center;
+transition:.3s;
+
+}
+
+
+.step.active{
+
+background:#0284c7;
+transform:translateY(-5px);
+
+}
+
+
+
+.output{
+
+background:#020617;
+padding:20px;
+border-radius:12px;
+line-height:1.6;
+
+}
+
+
+
+.chunk{
+
+background:#1e293b;
+padding:12px;
+margin:10px 0;
+border-radius:10px;
+
+}
+
+
+.vector{
+
+font-family:monospace;
+color:#4ade80;
+
+}
+
+
+
+.score{
+
+font-size:28px;
+color:#22c55e;
+
+}
+
+
+.grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>🧠 RAG Pipeline Simulator</h1>
+
+<div class="subtitle">
+Understand Retrieval Augmented Generation step-by-step
+</div>
+
+</header>
+
+
+
+<div class="container">
+
+
+
+<div class="card">
+
+<h2>1. Document Ingestion</h2>
+
+<textarea id="document">
+
+Retrieval Augmented Generation combines search and language models.
+Documents are split into chunks.
+Each chunk is converted into embeddings.
+The embeddings are stored inside a vector database.
+When users ask questions, relevant chunks are retrieved.
+The LLM uses those chunks to generate accurate answers.
+
+</textarea>
+
+
+<br><br>
+
+<button onclick="processDocument()">
+Process Document
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h2>RAG Pipeline</h2>
+
+
+<div class="pipeline">
+
+<div class="step" id="s1">
+📄 Document<br>
+Ingestion
+</div>
+
+
+<div class="step" id="s2">
+✂️ Chunking
+</div>
+
+
+<div class="step" id="s3">
+🧮 Embeddings
+</div>
+
+
+<div class="step" id="s4">
+🗄️ Vector DB
+</div>
+
+
+<div class="step" id="s5">
+🔍 Retrieval
+</div>
+
+
+<div class="step" id="s6">
+🤖 Generation
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="grid">
+
+
+<div class="card">
+
+<h2>2. Chunking Engine</h2>
+
+<div id="chunks">
+
+Waiting...
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h2>3. Embedding Model</h2>
+
+<div id="embeddings">
+
+Waiting...
+
+</div>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>4. Vector Database</h2>
+
+
+<div id="database">
+
+No vectors stored.
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>5. Ask Your Question</h2>
+
+
+<input id="query"
+placeholder="Example: How does RAG reduce hallucination?">
+
+
+<br><br>
+
+
+<button onclick="retrieve()">
+Run Retrieval
+</button>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="grid">
+
+
+<div class="card">
+
+
+<h2>6. Similarity Search</h2>
+
+<div id="retrieval">
+
+Waiting...
+
+</div>
+
+
+</div>
+
+
+
+<div class="card">
+
+<h2>7. LLM Response</h2>
+
+
+<div id="answer">
+
+Waiting...
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="card">
+
+
+<h2>8. RAG Evaluation</h2>
+
+
+<div class="score" id="score">
+--
+</div>
+
+
+<div id="evaluation">
+
+Run pipeline first.
+
+</div>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<script>
+
+
+let chunks=[];
+
+let vectors=[];
+
+
+
+function activate(id){
+
+document.querySelectorAll(".step")
+.forEach(x=>x.classList.remove("active"));
+
+
+document.getElementById(id)
+.classList.add("active");
+
+}
+
+
+
+function processDocument(){
+
+
+activate("s1");
+
+
+let doc=document
+.getElementById("document")
+.value;
+
+
+
+setTimeout(()=>{
+
+
+activate("s2");
+
+
+
+chunks =
+doc.split(".")
+.filter(x=>x.trim().length>0);
+
+
+
+let html="";
+
+
+chunks.forEach((c,i)=>{
+
+html+=`
+
+<div class="chunk">
+
+<b>Chunk ${i+1}</b><br>
+
+${c.trim()}
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById("chunks")
+.innerHTML=html;
+
+
+
+},700);
+
+
+
+
+setTimeout(()=>{
+
+
+activate("s3");
+
+
+vectors=[];
+
+
+chunks.forEach((c)=>{
+
+
+let vector =
+Array.from(c)
+.slice(0,8)
+.map(x=>x.charCodeAt(0)%10);
+
+
+
+vectors.push(vector);
+
+
+});
+
+
+let html="";
+
+
+vectors.forEach((v,i)=>{
+
+html+=`
+
+<div class="vector">
+
+Chunk ${i+1}: 
+[${v.join(",")}]
+
+</div>
+
+`;
+
+});
+
+
+document.getElementById("embeddings")
+.innerHTML=html;
+
+
+},1400);
+
+
+
+
+
+
+setTimeout(()=>{
+
+
+activate("s4");
+
+
+let html="";
+
+
+vectors.forEach((v,i)=>{
+
+
+html+=`
+
+<div class="chunk">
+
+Vector ID: ${i+1}<br>
+
+Embedding stored:<br>
+
+<span class="vector">
+
+${v.join(",")}
+
+</span>
+
+</div>
+
+
+`;
+
+
+});
+
+
+document.getElementById("database")
+.innerHTML=html;
+
+
+},2200);
+
+
+
+}
+
+
+
+
+
+
+
+
+function retrieve(){
+
+
+activate("s5");
+
+
+let query=
+document.getElementById("query").value
+.toLowerCase();
+
+
+
+let scores=[];
+
+
+
+chunks.forEach((chunk,i)=>{
+
+
+let words=query
+.split(" ");
+
+
+
+let score=0;
+
+
+words.forEach(w=>{
+
+if(chunk.toLowerCase().includes(w))
+score++;
+
+});
+
+
+scores.push({
+
+chunk,
+score
+
+});
+
+
+});
+
+
+
+scores.sort((a,b)=>b.score-a.score);
+
+
+
+let best=scores[0];
+
+
+
+document.getElementById("retrieval")
+.innerHTML=`
+
+<div class="chunk">
+
+<b>Retrieved Context</b><br><br>
+
+${best.chunk}
+
+<br><br>
+
+Similarity Score:
+${best.score}
+
+</div>
+
+`;
+
+
+
+
+
+setTimeout(()=>{
+
+
+activate("s6");
+
+
+
+document.getElementById("answer")
+.innerHTML=`
+
+<div class="output">
+
+Based on the retrieved knowledge:
+
+<br><br>
+
+<b>
+${best.chunk}
+</b>
+
+
+<br><br>
+
+
+The answer is generated by combining:
+
+<br>
+✔ User Question
+
+<br>
+✔ Retrieved Context
+
+<br>
+✔ Language Model Reasoning
+
+
+</div>
+
+
+`;
+
+
+
+
+document.getElementById("score")
+innerHTML="92%";
+
+
+document.getElementById("evaluation")
+innerHTML=
+
+`
+Retrieval Quality: Excellent ✅
+<br>
+Context Grounding: High ✅
+<br>
+Hallucination Risk: Low ✅
+
+`;
+
+
+
+},1200);
+
+
+
+}
+
+
+
+
+</script>
+
+
+</body>
+</html>
