@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RAG Learning Simulator</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    font-family:Inter,Arial,sans-serif;
+}
+
+body{
+    margin:0;
+    background:#08111f;
+    color:#fff;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:30px;
+}
+
+h1{
+    text-align:center;
+    font-size:38px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#9ca8c7;
+}
+
+
+.pipeline{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+    margin:30px 0;
+}
+
+
+.stage{
+    background:#17233d;
+    padding:15px;
+    border-radius:15px;
+    min-width:150px;
+    text-align:center;
+    border:1px solid #2d3d65;
+}
+
+
+.active{
+    background:#6c5ce7;
+}
+
+
+.card{
+
+    background:rgba(255,255,255,0.08);
+    padding:20px;
+    border-radius:20px;
+    margin:20px 0;
+    border:1px solid rgba(255,255,255,.15);
+
+}
+
+
+textarea,input{
+
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+background:#10192c;
+color:white;
+
+}
+
+
+button{
+
+background:#6c5ce7;
+border:none;
+padding:12px 20px;
+border-radius:12px;
+color:white;
+cursor:pointer;
+margin-top:10px;
+
+}
+
+
+.chunk{
+
+background:#111a30;
+padding:12px;
+border-radius:10px;
+margin:8px 0;
+
+}
+
+
+.vector{
+
+color:#76e4ff;
+
+}
+
+
+.result{
+
+background:#1c2948;
+padding:12px;
+border-radius:10px;
+margin:10px 0;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>🧠 RAG Simulator</h1>
+
+<p class="subtitle">
+Document → Chunk → Embed → Retrieve → Rerank → LLM
+</p>
+
+
+
+<div class="pipeline">
+
+<div class="stage" id="s1">📄 Document</div>
+<div class="stage" id="s2">✂️ Chunking</div>
+<div class="stage" id="s3">🔢 Embeddings</div>
+<div class="stage" id="s4">🗄 Vector DB</div>
+<div class="stage" id="s5">🔍 Retrieval</div>
+<div class="stage" id="s6">🤖 LLM</div>
+
+</div>
+
+
+
+
+<div class="card">
+
+<h2>1. Add Knowledge Document</h2>
+
+<textarea id="document">
+
+Duolingo helps people learn languages using lessons.
+Users complete exercises and earn XP.
+Some learners struggle to understand how their progress translates into real world fluency.
+
+</textarea>
+
+
+<button onclick="processDocument()">
+Process Document
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h2>2. Chunks Created</h2>
+
+<div id="chunks"></div>
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h2>3. Embeddings Created</h2>
+
+<div id="embeddings"></div>
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h2>4. Vector Database</h2>
+
+<div id="database"></div>
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>5. Ask Question</h2>
+
+<input id="query"
+value="How can learners understand fluency progress?">
+
+
+<button onclick="search()">
+Run RAG
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h2>6. Retrieved Context</h2>
+
+<div id="retrieval"></div>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+<h2>7. LLM Response</h2>
+
+
+<div id="response"></div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+<script>
+
+
+let chunks=[];
+
+let database=[];
+
+
+
+function vectorize(text){
+
+return [
+
+text.length,
+
+text.split(" ").length,
+
+(text.match(/learn/gi)||[]).length
+
+];
+
+}
+
+
+
+function similarity(a,b){
+
+let dot=0;
+
+for(let i=0;i<a.length;i++){
+
+dot+=a[i]*b[i];
+
+}
+
+
+let ma=Math.sqrt(a.reduce((x,y)=>x+y*y,0));
+
+let mb=Math.sqrt(b.reduce((x,y)=>x+y*y,0));
+
+
+return dot/(ma*mb);
+
+}
+
+
+
+
+
+function processDocument(){
+
+
+activate(1);
+
+
+let text=document.getElementById("document").value;
+
+
+
+chunks=text.match(/.{1,100}/g);
+
+
+
+document.getElementById("chunks").innerHTML=
+chunks.map((c,i)=>
+
+`
+<div class="chunk">
+
+Chunk ${i+1}<br>
+${c}
+
+</div>
+
+`
+
+).join("");
+
+
+
+activate(2);
+
+
+
+database=[];
+
+
+
+chunks.forEach((chunk,index)=>{
+
+
+let vector=vectorize(chunk);
+
+
+database.push({
+
+id:index+1,
+
+text:chunk,
+
+vector:vector
+
+});
+
+
+});
+
+
+
+activate(3);
+
+
+
+document.getElementById("embeddings").innerHTML=
+
+database.map(x=>
+
+`
+
+<div class="chunk vector">
+
+Chunk ${x.id}: 
+
+[${x.vector.map(v=>v.toFixed(2)).join(",")}]
+
+</div>
+
+`
+
+).join("");
+
+
+
+
+activate(4);
+
+
+
+document.getElementById("database").innerHTML=
+
+database.map(x=>
+
+`
+
+<div class="chunk">
+
+Vector ID:
+${x.id}
+
+Stored Metadata:
+Document Chunk ${x.id}
+
+</div>
+
+`
+
+).join("");
+
+
+
+}
+
+
+
+
+
+function search(){
+
+
+activate(5);
+
+
+let query=document.getElementById("query").value;
+
+
+let qVector=vectorize(query);
+
+
+
+let results=database.map(chunk=>({
+
+
+...chunk,
+
+score:similarity(qVector,chunk.vector)
+
+
+}));
+
+
+
+results.sort((a,b)=>b.score-a.score);
+
+
+
+let top=results.slice(0,2);
+
+
+
+document.getElementById("retrieval").innerHTML=
+
+top.map(x=>
+
+`
+
+<div class="result">
+
+Chunk ${x.id}
+
+<br>
+
+Similarity Score:
+
+${x.score.toFixed(3)}
+
+<br><br>
+
+${x.text}
+
+</div>
+
+`
+
+).join("");
+
+
+
+
+activate(6);
+
+
+
+document.getElementById("response").innerHTML=
+
+`
+
+<div class="result">
+
+The LLM receives:
+
+<br><br>
+
+<strong>User Question:</strong>
+
+${query}
+
+
+<br><br>
+
+<strong>Context:</strong>
+
+${top.map(x=>x.text).join(" ")}
+
+
+<br><br>
+
+<strong>Generated Answer:</strong>
+
+Learners can understand progress by connecting lesson completion with real-world fluency indicators.
+
+</div>
+
+`;
+
+}
+
+
+
+
+function activate(num){
+
+document.querySelectorAll(".stage")
+.forEach(x=>x.classList.remove("active"));
+
+document.getElementById("s"+num)
+.classList.add("active");
+
+}
+
+
+
+processDocument();
+
+
+</script>
+
+
+</body>
+</html>
