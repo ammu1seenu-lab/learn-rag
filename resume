@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nagalakshmi Shrinivasan Resume</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#f5f7fa;
+    color:#1f2937;
+    line-height:1.5;
+}
+
+.resume{
+    max-width:1100px;
+    margin:40px auto;
+    background:white;
+    display:grid;
+    grid-template-columns: 32% 68%;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.sidebar{
+    background:#0f172a;
+    color:white;
+    padding:40px 30px;
+}
+
+.main{
+    padding:40px;
+}
+
+h1{
+    font-size:34px;
+    line-height:1.1;
+    margin-bottom:8px;
+    font-weight:700;
+}
+
+.tagline{
+    font-size:15px;
+    color:#cbd5e1;
+    margin-bottom:30px;
+}
+
+.section{
+    margin-bottom:30px;
+}
+
+.section-title{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-weight:600;
+    margin-bottom:12px;
+    color:#94a3b8;
+}
+
+.contact p,
+.skills p{
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.summary{
+    font-size:15px;
+    color:#4b5563;
+    margin-top:18px;
+}
+
+.main-title{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.highlight{
+    color:#2563eb;
+}
+
+.experience-item{
+    margin-bottom:24px;
+    padding-bottom:18px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.role{
+    font-size:18px;
+    font-weight:600;
+    color:#111827;
+}
+
+.company{
+    font-size:15px;
+    color:#2563eb;
+    font-weight:500;
+}
+
+.duration{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:4px;
+}
+
+.location{
+    font-size:13px;
+    color:#6b7280;
+}
+
+.badges{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+}
+
+.badge{
+    background:#eff6ff;
+    color:#1d4ed8;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:500;
+}
+
+.profile-header{
+    margin-bottom:30px;
+}
+
+@media(max-width:768px){
+    .resume{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="resume">
+
+    <aside class="sidebar">
+
+        <h1>Nagalakshmi<br>Shrinivasan</h1>
+
+        <div class="tagline">
+            Product Manager • AI & LLM Systems • Business Analysis • Delivery Leadership
+        </div>
+
+        <div class="section contact">
+            <div class="section-title">Contact</div>
+            <p>📧 ammu1seenu@gmail.com</p>
+            <p>📍 Dublin 1, County Dublin, Ireland</p>
+            <p>🔗 linkedin.com/in/nagalakshmishrinivasan</p>
+        </div>
+
+        <div class="section skills">
+            <div class="section-title">Core Areas</div>
+            <p>AI & LLM Systems</p>
+            <p>Enterprise SaaS</p>
+            <p>E-commerce Platforms</p>
+            <p>Product Delivery</p>
+            <p>Business Analysis</p>
+            <p>Cross-functional Leadership</p>
+            <p>Japanese–English Bilingual</p>
+            <p>Japanese Culture</p>
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <div class="profile-header">
+            <div class="main-title">
+                Product Manager with <span class="highlight">12+ Years</span> of Experience
+            </div>
+
+            <p class="summary">
+                Product Manager with a Business Analyst and delivery background specializing in
+                AI/LLM systems, enterprise SaaS, and e-commerce platforms. Experienced in
+                translating complex business problems into structured requirements and delivering
+                scalable, user-centered solutions through cross-functional collaboration.
+                Recent work includes OCR + LLM-based contract intelligence systems, evaluation
+                frameworks for Japanese legal document processing, and large-scale platform
+                modernization initiatives including monolith-to-microservices transformation.
+            </p>
+
+            <div class="badges">
+                <div class="badge">AI Products</div>
+                <div class="badge">LLM Systems</div>
+                <div class="badge">Enterprise SaaS</div>
+                <div class="badge">Product Strategy</div>
+                <div class="badge">Delivery Excellence</div>
+                <div class="badge">Japanese Bilingual</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Experience</div>
+
+            <div class="experience-item">
+                <div class="role">Senior Project Manager - Japanese Bilingual</div>
+                <div class="company">SourceFuse</div>
+                <div class="duration">Aug 2023 – Apr 2026</div>
+                <div class="location">Uttar Pradesh, India</div>
+            </div>
+
+            <div class="experience-item">
+                <div class="role">Bilingual Project Manager</div>
+                <div class="company">Rakuten India</div>
+                <div class="duration">Oct 2021 – Jul 2023</div>
+                <div class="location">Bengaluru, India</div>
+            </div>
+
+            <div class="experience-item">
+                <div class="role">Japanese CSR International Team</div>
+                <div class="company">Zazzle</div>
+                <div class="duration">Nov 2019 – May 2021</div>
+                <div class="location">Cork, Ireland</div>
+            </div>
+
+            <div class="experience-item">
+                <div class="role">Technical Lead</div>
+                <div class="company">HCLTech</div>
+                <div class="duration">May 2017 – May 2019</div>
+                <div class="location">Bengaluru, India</div>
+            </div>
+
+            <div class="experience-item">
+                <div class="role">Officer - Japanese Bilingual</div>
+                <div class="company">Quest Global</div>
+                <div class="duration">Oct 2015 – May 2017</div>
+                <div class="location">Bengaluru, India</div>
+            </div>
+
+            <div class="experience-item" style="border-bottom:none;">
+                <div class="role">Japanese Translator</div>
+                <div class="company">NIHON TECHNOLOGY</div>
+                <div class="duration">Jun 2012 – Sep 2015</div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
